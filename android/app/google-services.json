@@ -1,0 +1,234 @@
+{
+  "project_info": {
+    "project_number": "128947506644",
+    "project_id": "yemeksepeti-f4347",
+    "storage_bucket": "yemeksepeti-f4347.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128947506644:android:1a616062ee91ed0b185a41",
+        "android_client_info": {
+          "package_name": "com.example.delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAzV7s1_JJAPwXbOHWHPcRzMfvXBnn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "128947506644-56jerju1p197crikknkm8geuae8e1u7f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hashimniane.yemeksepeti"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128947506644:android:a8951850a82a7efe185a41",
+        "android_client_info": {
+          "package_name": "com.example.restaurent_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128947506644-5nk32ppre7auv4madbcjv0jdajrgcpqa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restaurent_app",
+            "certificate_hash": "f29d45c9bbe328557c1182ec56ad244b77007d2a"
+          }
+        },
+        {
+          "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAzV7s1_JJAPwXbOHWHPcRzMfvXBnn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "128947506644-56jerju1p197crikknkm8geuae8e1u7f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hashimniane.yemeksepeti"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128947506644:android:18db5f22b5267a6b185a41",
+        "android_client_info": {
+          "package_name": "com.hashimCustomer.new_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAzV7s1_JJAPwXbOHWHPcRzMfvXBnn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "128947506644-56jerju1p197crikknkm8geuae8e1u7f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hashimniane.yemeksepeti"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128947506644:android:ac5c2f23a946cf0e185a41",
+        "android_client_info": {
+          "package_name": "com.hashimNiane.courier_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAzV7s1_JJAPwXbOHWHPcRzMfvXBnn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "128947506644-56jerju1p197crikknkm8geuae8e1u7f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hashimniane.yemeksepeti"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128947506644:android:443a08b679b45e28185a41",
+        "android_client_info": {
+          "package_name": "com.hashimniane.restaurant_version"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAzV7s1_JJAPwXbOHWHPcRzMfvXBnn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "128947506644-56jerju1p197crikknkm8geuae8e1u7f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hashimniane.yemeksepeti"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128947506644:android:7ad81c5ff2a51ace185a41",
+        "android_client_info": {
+          "package_name": "com.hashimniane.yemeksepeti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhAzV7s1_JJAPwXbOHWHPcRzMfvXBnn1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128947506644-9pvhpe5h39qt1l2ks19url290sn0r9as.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "128947506644-56jerju1p197crikknkm8geuae8e1u7f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hashimniane.yemeksepeti"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

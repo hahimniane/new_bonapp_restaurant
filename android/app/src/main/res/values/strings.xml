@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name">Bonapp-restaurant</string>
+
+    <string name="facebook_app_id">3350334655222393</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">015dc02e2b7275be23581cbfa00b08cd</string>
+
+
+</resources>
