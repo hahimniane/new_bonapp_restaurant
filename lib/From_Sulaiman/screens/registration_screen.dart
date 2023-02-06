@@ -8,24 +8,242 @@ import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../../Provders/validate_form.dart';
 import '../../generated/l10n.dart';
 import '../../services/firbase.dart';
 import '../../Provders/provider.dart';
 import 'login_screen.dart';
 import 'dart:io' show Platform;
 
+String? selectedAverageTime;
+String? selectedAveragePrice;
+final formKey = GlobalKey<FormState>();
+final TextEditingController email = TextEditingController();
+final TextEditingController password = TextEditingController();
+final TextEditingController passwordAgain = TextEditingController();
+final TextEditingController restaurantName = TextEditingController();
+final TextEditingController restaurantFullAddress = TextEditingController();
+final TextEditingController restaurantPhoneNumber = TextEditingController();
+
+
+Future<Position?> getLocation() async {
+  final position;
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if (permission == LocationPermission.denied) {
+    await Geolocator.requestPermission();
+
+    return null;
+  } else if (permission == LocationPermission.deniedForever) {
+    await Geolocator.openLocationSettings();
+
+    return null;
+  } else {
+    position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print("latitude = ${position.latitude}");
+    print("longitude= ${position.longitude}");
+
+    // addRestaurantLocationToFirebase(
+    //     position.latitude.toString(), position.longitude.toString());
+    return position;
+  }
+}
+String? community;
+
 class RegistrationScreen extends StatefulWidget {
-  List<String> ourList;
-  String theFirstCommunity;
-  RegistrationScreen(
-      {Key? key, required this.ourList, required this.theFirstCommunity})
-      : super(key: key);
+  final Function updateEmail;
+  bool dateErrorVisible;
+
+  RegistrationScreen({
+    Key? key,
+    required this.updateEmail,
+    required this.dateErrorVisible
+  }) : super(key: key);
+
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  late FormValidationProvider _formValidationProvider;
+
+  // void _validateForm() {
+  //   if (_formKey.currentState!.validate()) {
+  //     widget.updateEmail(email.text);
+  //     widget.validate();
+  //   }
+  // }
+
   var signUpButtonController = RoundedLoadingButtonController();
+
+
+
+  late MyProvider myProvider;
+
+  List<DropdownMenuItem<String>> priceDropdownList = [
+    DropdownMenuItem(
+      value: '10.000,000',
+      child: Text('10.000,000 GNF'),
+    ),
+    DropdownMenuItem(
+      value: '25.000,000',
+      child: Text('25.000,000 GNF'),
+    ),
+    DropdownMenuItem(
+      value: '50.000,000',
+      child: Text('50.000,000 GNF'),
+    ),
+    DropdownMenuItem(
+      value: '75.000,000',
+      child: Text('75.000,000 GNF'),
+    ),
+    DropdownMenuItem(
+      value: '100.000,000',
+      child: Text('100.000,000 GNF'),
+    ),
+  ];
+
+  List<DropdownMenuItem<String>> timeDropdownList = [
+    DropdownMenuItem(
+      value: '20',
+      child: Text('20 Min'),
+    ),
+    DropdownMenuItem(
+      value: '30',
+      child: Text('30 Min'),
+    ),
+    DropdownMenuItem(
+      value: '45',
+      child: Text('45 Min'),
+    ),
+    DropdownMenuItem(
+      value: '60',
+      child: Text('1Hr'),
+    ),
+    DropdownMenuItem(
+      value: '90',
+      child: Text('1 hr:30 Min'),
+    ),
+  ];
+
+  _selectDate() async {
+    DateTime? picked;
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      picked = await showModalBottomSheet(
+        useSafeArea: true,
+        constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.98,
+            maxHeight: MediaQuery.of(context).size.height * 0.90),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              // color: Colors.grey,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            height: 400,
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 18),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // color: Colors.purple,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18)),
+                    height: 300,
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: CupertinoDatePicker(
+                            mode: CupertinoDatePickerMode.date,
+                            initialDateTime: DateTime.now(),
+                            onDateTimeChanged: (DateTime newDateTime) {
+                              setState(() {
+                                Provider.of<MyProvider>(
+                                  context,
+                                  listen: false,
+                                ).updateDate(newDateTime);
+                              });
+                            },
+                          ),
+                        ),
+                        Divider(
+                          height: 5,
+                          thickness: 1,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+
+                              // borderRadius: BorderRadius.circular(15)
+                              ),
+                          width: MediaQuery.of(context).size.width,
+                          child: TextButton(
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 23,
+                                  color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: TextButton.styleFrom(
+                              // backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0)),
+                  width: MediaQuery.of(context).size.width * 0.93,
+                  height: 60,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Center(
+                      child: Text("Cancel",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue)),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100),
+      );
+    }
+    return picked;
+  }
 
   addRestaurantLocationToFirebase(String latitude, String longitude) {
     FirebaseFirestore.instance
@@ -37,27 +255,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }, SetOptions(merge: true));
   }
 
-  getLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
 
-    if (permission == LocationPermission.denied) {
-      await Geolocator.requestPermission();
-
-      return;
-    } else if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openLocationSettings();
-
-      return;
-    } else {
-      final position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      print("latitude = ${position.latitude}");
-      print("longitude= ${position.longitude}");
-
-      addRestaurantLocationToFirebase(
-          position.latitude.toString(), position.longitude.toString());
-    }
-  }
 
   List<String> myList = [];
   List<String> cities = [];
@@ -68,136 +266,42 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.initState();
   }
 
-  // List<String> communityItems = [
-  //   // "Almamya",
-  //   // "Boulbinet",
-  //   // "Coronthie",
-  //   // "Fotoba",
-  //   // "Kassa",
-  //   // "Kouléwondy",
-  //   // "Manquepas",
-  //   // "Sandervalia",
-  //   // "Sans-fil",
-  //   // "Témitaye",
-  //   // "Tombo",
-  //   // "Belle-vue école",
-  //   // "Belle-vue-marché",
-  //   // "Camayenne",
-  //   // "Cameroun",
-  //   // "Dixinn-cité1",
-  //   // "Dixinn-cité 2",
-  //   // "Dixinn-gare",
-  //   // "Dixinn-gare-rails",
-  //   // "Dixinn-mosquée",
-  //   // "Dixinn-port",
-  //   // " Hafia 1",
-  //   // "Hafia 2",
-  //   // " Hafia-minière",
-  //   // "Hafia-mosquée",
-  //   // "Kénien",
-  //   // "Landréah",
-  //   // "Minière-cité",
-  //   // "Boussoura",
-  //   // "Bonfi",
-  //   // "Bonfi-marché",
-  //   // "Carrière",
-  //   // "Coléah-centre",
-  //   // "Coléah-cité",
-  //   // "Domino",
-  //   // "Hermakönon",
-  //   // "Imprimerie",
-  //   // "Lanséboudji",
-  //   // "Madina-centre",
-  //   // "Madina-cité",
-  //   // "Madina-école",
-  //   // "Madina-marché",
-  //   // "Madina-mosquée",
-  //   // "Mafanco",
-  //   // "Mafonco-centre",
-  //   // "Matam",
-  //   // "Matam-lido",
-  //   // "Touguiwondy",
-  //   // " Cobaya",
-  //   // "Dar-es-salam",
-  //   // " Hamdalaye 1",
-  //   // "Hamdalaye 2",
-  //   // "Hamdalaye-mosquée",
-  //   // "Kaporo-centre",
-  //   // "Kaporo-rails",
-  //   // " Kipé",
-  //   // " Koloma 1",
-  //   // "Koloma 2",
-  //   // "Lambadji",
-  //   // "Nongo",
-  //   // "Ratoma-centre",
-  //   // "Ratoma-dispensaire",
-  //   // "Simbaya-gare",
-  //   // "Sonfonia-gare",
-  //   // "Taouyah",
-  //   // "Wanindara",
-  //   // "Yattayah",
-  //   // "Béanzin",
-  //   // "Camp Alpha Yaya Diallo",
-  //   // "Citée de l'air",
-  //   // "Dabompa, Dabondy 1",
-  //   // "Dabondy 2",
-  //   // "Dabondy 3",
-  //   // "Dabondyécole",
-  //   // "Dabondy-rails",
-  //   // "Dar-es-salam",
-  //   // "Gbéssia-centre",
-  //   // "Gbéssia-cité 1",
-  //   // "Gbessia-cité 2",
-  //   // "Gbessia-cité 3",
-  //   // "Gbéssia-école",
-  //   // "Gbéssia-port 1",
-  //   // "Gbéssia-port 2",
-  //   // "Kissosso",
-  //   // " Matoto-centre",
-  //   // "Matoto-marché",
-  //   // "Sangoya-mosquée",
-  //   // "Simbaya 1",
-  //   // "Simbaya 2",
-  //   // "Tanéné-marché",
-  //   // "Tanéné-mosquée",
-  //   // "Tombolia",
-  //   // "Yimbaya-école",
-  //   // "Yimbaya-permanence",
-  //   // "Yimbaya-tannerie"
-  // ];
+  FirebaseAuthentications firebaseFunction = FirebaseAuthentications();
 
-  FirebaseAthentications firebaseFunction = FirebaseAthentications();
-  @override
   // from key
-  final _formKey = GlobalKey<FormState>();
+
 
   final _auth = FirebaseAuth.instance;
+
   //editing controller
-  final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
-  final TextEditingController passwordAgain = TextEditingController();
-  final TextEditingController restaurantName = TextEditingController();
-  final TextEditingController restaurantFullAddress = TextEditingController();
-  final TextEditingController restaurantPhoneNumber = TextEditingController();
+
+
   // final TextEditingController community = TextEditingController();
-  String? community;
+
+
+
   @override
   Widget build(BuildContext context) {
     //=====================email input filed ==============================//
     final emailField = TextFormField(
+      onChanged: (value) {
+        print('the value is $value');
+        widget.updateEmail(value);
+      },
       autofocus: false,
       controller: email,
       keyboardType: TextInputType.emailAddress,
       validator: (value) {
         // RegExp regexp = RegExp(r'^.{3,}$');
         if (value!.isEmpty) {
-          return ('Email address is required');
+          return (S.of(context).emailAddressIsRequired);
         }
         // if (!regexp.hasMatch(value)) {
         //   return ("Restaurant name can't be less than 3 char");
         // }
       },
       onSaved: (value) {
+        widget.updateEmail(value);
         email.text = value!;
       },
       textInputAction: TextInputAction.next,
@@ -208,6 +312,85 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
     );
 
+    final restaurantCommunity = FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('Country')
+                .doc('Guinea')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return Column(
+                children: <Widget>[
+                  DropdownButtonFormField(
+                    hint: Text(S.of(context).chooseCommunity),
+                    borderRadius: BorderRadius.circular(8),
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.my_location_sharp,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        community = value.toString();
+                      });
+                      state.didChange(value as String?);
+                    },
+                    value: community,
+                    items: [
+                      for (int i = 0;
+                          i <= snapshot.data!['conakry'].length - 1;
+                          ++i)
+                        DropdownMenuItem(
+                          child: Text(
+                            snapshot.data!['conakry'][i],
+                          ),
+                          value: snapshot.data!['conakry'][i],
+                        ),
+                    ],
+                  ),
+                  if (state.hasError)
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 10, 20, 0),
+                      alignment: Alignment.topLeft,
+                      decoration: BoxDecoration(
+
+                          // color: Colors.red[100],
+                          // borderRadius: BorderRadius.circular(5),
+                          ),
+                      child: Text(
+                        state.errorText!,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            });
+      },
+      validator: (community) {
+        if (community == null || community.isEmpty) {
+          return (S.of(context).communitySelectionIsRequired);
+        }
+        return null;
+      },
+      onSaved: (value) {
+        community = value!;
+      },
+    );
+
     //=====================restaurant name input filed ==============================//
     final restaurantNameField = TextFormField(
       autofocus: false,
@@ -216,7 +399,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       validator: (value) {
         RegExp regexp = RegExp(r'^.{3,}$');
         if (value!.isEmpty) {
-          return ('Restaurant name is required');
+          return (S.of(context).restaurantNameIsRequired);
         }
         if (!regexp.hasMatch(value)) {
           return ("Restaurant name can't be less than 3 char");
@@ -241,7 +424,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       validator: (value) {
         RegExp regexp = RegExp(r'^.{3,}$');
         if (value!.isEmpty) {
-          return ('Restaurant address is required');
+          return (S.of(context).restaurantFullAddressIsRequired);
         }
         if (!regexp.hasMatch(value)) {
           return ("Restaurant address can't be less than 3 char");
@@ -254,7 +437,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
           prefixIcon: const Icon(Icons.place),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "Restaurant full address",
+          hintText: S.of(context).restaurantFullAddressString,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
     );
 
@@ -266,7 +449,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       validator: (value) {
         RegExp regexp = RegExp(r'^.{3,}$');
         if (value!.isEmpty) {
-          return ('Contact is required');
+          return (S.of(context).phoneNumberIsRequired);
         }
         if (!regexp.hasMatch(value)) {
           return ("Please enter a valid number");
@@ -340,7 +523,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       validator: (value) {
         RegExp regexp = new RegExp(r'^.{6,}$');
         if (value!.isEmpty) {
-          return ('Password is required');
+          return (S.of(context).passwordIsRequired);
         }
 
         if (!regexp.hasMatch(value)) {
@@ -367,7 +550,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       validator: (value) {
         RegExp regexp = new RegExp(r'^.{6,}$');
         if (value!.isEmpty) {
-          return ('Password is required');
+          return (S.of(context).confirmPasswordIsRequired);
         }
 
         if (!regexp.hasMatch(value)) {
@@ -398,227 +581,254 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       // padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
       // minWidth: MediaQuery.of(context).size.width,
       onPressed: () async {
+        if (Provider.of<MyProvider>(context, listen: false).date == null) {
+          setState(() {
+            // print('The date variable is ${Provider.of<MyProvider>(context,listen: false).date}');
+           widget. dateErrorVisible = true;
+          });
+        } else {
+          setState(() {
+            widget. dateErrorVisible = false;
+            // print('The date variable is ${Provider.of<MyProvider>(context,listen: false).date}');
+          });
+        }
         var checkPasswordSync = password.text.compareTo(passwordAgain.text);
-        if (_formKey.currentState!.validate()) {
-          // await _auth
-          // .createUserWithEmailAndPassword(email: email, password: password)
-          // .then((value) => {
-          //       // postDetailsToFirestore()
-          //     })
-          //   .catchError((e) {
-          // Fluttertoast.showToast(msg: e!.messsage);
+
+        if (formKey.currentState!.validate() &&
+            Provider.of<MyProvider>(context, listen: false).date != null) {
           //---------------------------------------------------//
-          firebaseFunction.SignUpUser(
-              context,
-              email.text,
-              password.text,
-              restaurantName.text,
-              restaurantFullAddress.text,
-              restaurantPhoneNumber.text,
-              community!,
-              Provider.of<MyProvider>(
-                context,
-                listen: false,
-              ).date,
-              signUpButtonController);
-          print('hi');
+          // firebaseFunction.SignUpUser(
+          //      context: context,
+          //   email:  email.text,
+          //   password:  password.text,
+          //   userName:  restaurantName.text,
+          //    fullAddress: restaurantFullAddress.text,
+          //   phoneNumber:  restaurantPhoneNumber.text,
+          //   community:  community!,
+          //  restaurantFoundationDate:   Provider.of<MyProvider>(
+          //       context,
+          //       listen: false,
+          //     ).date,
+          //   controller:  signUpButtonController,
+          //   position: await getLocation()
+          //
+          // );
         } else {
           signUpButtonController.reset();
         }
-
-        // if (checkPasswordSync == 0) {
-        //
-        // }
-        // else {
-        //   Fluttertoast.showToast(
-        //       msg: 'The passwords must match',
-        //       toastLength: Toast.LENGTH_LONG,
-        //       gravity: ToastGravity.CENTER,
-        //       timeInSecForIosWeb: 1,
-        //       backgroundColor: Colors.red,
-        //       textColor: Colors.white,
-        //       fontSize: 20.0);
-        // }
-
-        // signUp(email.text, password.text);
       },
       controller: signUpButtonController,
       child: Text(
-        S.of(context).signUpButtonString,
+        'Next',
+        // S.of(context).signUpButtonString,
         textAlign: TextAlign.center,
         style: TextStyle(
             fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.pink,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-            child: Container(
-          color: Colors.white,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                const CircleAvatar(
-                  backgroundImage: AssetImage('images/appLogo.png'),
-                  backgroundColor: Colors.white,
-                  radius: 50,
-                ),
-                const Text(
-                  'BonApp',
-                  style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepOrangeAccent,
-                      fontFamily: 'pacifico'),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: emailField,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: restaurantNameField,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                  child: Container(
+    return  SingleChildScrollView(
+          child: Container(
+        color: Colors.white,
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              // const CircleAvatar(
+              //   backgroundImage: AssetImage('images/appLogo.png'),
+              //   backgroundColor: Colors.white,
+              //   radius: 50,
+              // ),
+              // const Text(
+              //   'BonApp',
+              //   style: TextStyle(
+              //       fontSize: 40,
+              //       fontWeight: FontWeight.bold,
+              //       color: Colors.deepOrangeAccent,
+              //       fontFamily: 'pacifico'),
+              // ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0.0, vertical: 5),
+                child: emailField,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0.6, vertical: 5),
+                child: restaurantNameField,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4),
+                child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
                       // border: Border.all(width: 0, color: Colors.grey),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: StreamBuilder<DocumentSnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Country')
-                          .doc('Guinea')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        return snapshot.hasData
-                            ? DropdownButtonFormField(
-                                hint: Text(S.of(context).chooseCommunity),
-                                borderRadius: BorderRadius.circular(8),
-                                isExpanded: true,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.my_location_sharp,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    community = value.toString();
-                                  });
-                                },
-                                value: community,
-                                items: [
-                                  for (int i = 0;
-                                      i <= snapshot.data!['conakry'].length - 1;
-                                      ++i)
-                                    DropdownMenuItem(
-                                      child: Text(
-                                        snapshot.data!['conakry'][i],
-                                      ),
-                                      value: snapshot.data!['conakry'][i],
-                                    ),
-                                ],
-                              )
-                            : Container();
-                      },
+                    child: restaurantCommunity),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+                child: restaurantAddressField,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+                child: restaurantPhoneNumberField,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+                child: DatePicker(),
+              ),
+              Visibility(
+                visible: widget.dateErrorVisible,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(55, 0, 20, 0),
+                  alignment: Alignment.topLeft,
+                  decoration: BoxDecoration(
+
+                      // color: Colors.red[100],
+                      // borderRadius: BorderRadius.circular(5),
+                      ),
+                  child: Text(
+                    'choose date',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
                     ),
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: restaurantAddressField,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: passwordField,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: passwordAgainField,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: AverageSelector(
+                  hintText: S.of(context).chooseAveragePrice,
+                  icon: Icon(Icons.money),
+                  dropdownMenuItems: priceDropdownList,
+                  valueToUpdate: 'price',
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: restaurantPhoneNumberField,
+              ),
+
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: AverageSelector(
+                  hintText: S.of(context).chooseAverageTime,
+                  icon: Icon(Icons.timelapse),
+                  dropdownMenuItems: timeDropdownList,
+                  valueToUpdate: 'time',
                 ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 5),
-                    child: DatePickerExample()
-                    // : Container(
-                    //   height:20,
-                    //   width:400,
-                    //   child: TextButton(onPressed: () {  }, child: Text('Choose Date'),
-                    //
-                    //   )
-                    // ),
-                    ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: passwordField,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: passwordAgainField,
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5),
-                  child: registerButton,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(S.of(context).alreadyHaveAnAccountString),
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                        },
-                        child: Text(
-                          S.of(context).loginButtonString,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.deepOrangeAccent,
-                              decoration: TextDecoration.underline),
-                        ))
-                  ],
-                )
-              ],
-            ),
+              ),
+
+
+
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     Padding(
+              //       padding: const EdgeInsets.symmetric(
+              //           horizontal: 0.0, vertical: 5),
+              //       child: TextButton(
+              //         style: TextButton.styleFrom(
+              //             shape: RoundedRectangleBorder(
+              //                 borderRadius: BorderRadius.circular(10)),
+              //             backgroundColor: Colors.deepOrange,
+              //             elevation: 1),
+              //         onPressed:  (){
+              //           if (Provider.of<MyProvider>(context, listen: false).date == null) {
+              //             setState(() {
+              //               // print('The date variable is ${Provider.of<MyProvider>(context,listen: false).date}');
+              //               dateErrorVisible = true;
+              //             });
+              //           } else {
+              //             setState(() {
+              //               dateErrorVisible = false;
+              //               // print('The date variable is ${Provider.of<MyProvider>(context,listen: false).date}');
+              //             });
+              //           }
+              //           var checkPasswordSync = password.text.compareTo(passwordAgain.text);
+              //
+              //           if (_formKey.currentState!.validate() &&
+              //               Provider.of<MyProvider>(context, listen: false).date != null) {
+              //             //---------------------------------------------------//
+              //             // firebaseFunction.SignUpUser(
+              //             //      context: context,
+              //             //   email:  email.text,
+              //             //   password:  password.text,
+              //             //   userName:  restaurantName.text,
+              //             //    fullAddress: restaurantFullAddress.text,
+              //             //   phoneNumber:  restaurantPhoneNumber.text,
+              //             //   community:  community!,
+              //             //  restaurantFoundationDate:   Provider.of<MyProvider>(
+              //             //       context,
+              //             //       listen: false,
+              //             //     ).date,
+              //             //   controller:  signUpButtonController,
+              //             //   position: await getLocation()
+              //             //
+              //             // );
+              //           } else {
+              //             signUpButtonController.reset();
+              //           }
+              //          print('selected average time $selectedAverageTime');
+              //           print('selected average Price $selectedAveragePrice');
+              //         },
+              //         child: Text(
+              //           'Next',
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.bold, color: Colors.white),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Text(S.of(context).alreadyHaveAnAccountString),
+              //     GestureDetector(
+              //         onTap: () {
+              //           Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                   builder: (context) => LoginScreen()));
+              //         },
+              //         child: Text(
+              //           S.of(context).loginButtonString,
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.bold,
+              //               fontSize: 15,
+              //               color: Colors.deepOrangeAccent,
+              //               decoration: TextDecoration.underline),
+              //         ))
+              //   ],
+              // )
+            ],
           ),
-        )),
-      ),
-    );
+        ),
+      ));
+
   }
 
   void signUp(String email, String password) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
-    if (_formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate()) {
       // await _auth
       // .createUserWithEmailAndPassword(email: email, password: password)
       // .then((value) => {
@@ -627,6 +837,104 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       //   .catchError((e) {
       // Fluttertoast.showToast(msg: e!.messsage);
     }
+  }
+
+  // FormValidationProvider? _formValidationProvider;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    myProvider = Provider.of<MyProvider>(context, listen: false);
+    // _formValidationProvider.initializeFormKey(formKey);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    restaurantFullAddress.clear();
+    restaurantName.clear();
+    community=null;
+    restaurantPhoneNumber.clear();
+    selectedAveragePrice=null;
+    selectedAverageTime=null;
+
+    email.clear();
+    password.clear();
+    passwordAgain.clear();
+
+    myProvider.date = null;
+  }
+}
+
+class AverageSelector extends StatefulWidget {
+  String hintText;
+  Icon icon;
+  List<DropdownMenuItem<String>> dropdownMenuItems;
+  String valueToUpdate;
+
+  AverageSelector({
+    Key? key,
+    required this.hintText,
+    required this.icon,
+    required this.dropdownMenuItems,
+    required this.valueToUpdate,
+  }) : super(key: key);
+
+  @override
+  State<AverageSelector> createState() => _AverageSelectorState();
+}
+
+class _AverageSelectorState extends State<AverageSelector> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // color: Colors.green,
+      height: 56,
+      child: Align(
+        alignment: Alignment.center,
+        child: DropdownButtonFormField(
+          isExpanded: true,
+          validator: (String? value) {
+            if (value == null || value.isEmpty) {
+              return (widget.valueToUpdate.toLowerCase() == 'time'
+                  ? S.of(context).averageTimeIsRequired
+                  : S.of(context).averagePriceIsRequired);
+            }
+            return null;
+          },
+          onSaved: (value) {
+            if (widget.valueToUpdate.toLowerCase() == 'time') {
+              setState(() {
+                selectedAverageTime = value as String?;
+                print('the value is $value');
+              });
+            } else {
+              setState(() {
+                selectedAveragePrice = value as String?;
+              });
+            }
+          },
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(bottom: 15),
+            // errorText: 'error',
+            hintText: widget.hintText,
+            prefixIcon: widget.icon,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          items: widget.dropdownMenuItems,
+          onChanged: (value) {
+            setState(() {
+              if (widget.valueToUpdate.toLowerCase() == 'time') {
+                selectedAverageTime = value as String?;
+              } else {
+                selectedAveragePrice = value as String?;
+              }
+            });
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -681,21 +989,154 @@ postDetailsToFirestore() async {
   // }
 }
 
-class DatePickerExample extends StatefulWidget {
+class DatePicker extends StatefulWidget {
   // =DateTime(2016, 10, 26);
-  DatePickerExample({
+  DatePicker({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<DatePickerExample> createState() => _DatePickerExampleState();
+  State<DatePicker> createState() => _DatePickerState();
 }
 
-class _DatePickerExampleState extends State<DatePickerExample> {
-  DateTime date = DateTime(2000, 01, 01);
+class _DatePickerState extends State<DatePicker> {
+  DateTime? date;
+
+  // DateTime(2000, 01, 01);
 
   DateTime time = DateTime(2016, 5, 10, 22, 35);
   DateTime dateTime = DateTime(2016, 8, 3, 17, 45);
+
+  Future<DateTime?> _selectDate() async {
+    DateTime? picked;
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      picked = await showModalBottomSheet(
+        useSafeArea: true,
+        constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.98,
+            maxHeight: MediaQuery.of(context).size.height * 0.90),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              // color: Colors.grey,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            height: 400,
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 18),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // color: Colors.purple,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18)),
+                    height: 300,
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: CupertinoDatePicker(
+                            mode: CupertinoDatePickerMode.date,
+                            initialDateTime: DateTime.now(),
+                            maximumDate: DateTime.now(),
+                            onDateTimeChanged: (DateTime newDateTime) {
+                              setState(() {
+                                date = newDateTime;
+                                picked = newDateTime;
+                                Provider.of<MyProvider>(context, listen: false)
+                                    .updateDate(newDateTime);
+                              });
+                            },
+                          ),
+                        ),
+                        Divider(
+                          height: 5,
+                          thickness: 1,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+
+                              // borderRadius: BorderRadius.circular(15)
+                              ),
+                          width: MediaQuery.of(context).size.width,
+                          child: TextButton(
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 23,
+                                  color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: TextButton.styleFrom(
+                              // backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(bottom: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.0)),
+                    width: MediaQuery.of(context).size.width * 0.93,
+                    height: 60,
+                    child: TextButton(
+                      onPressed: () {
+                 Navigator.pop(context);
+                      },
+                      child: Center(
+                        child: Text("Cancel",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue)),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      DateTime? selectedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now(),
+      );
+
+      if (selectedDate != null) {
+        setState(() {
+          date = selectedDate;
+          Provider.of<MyProvider>(context, listen: false)
+              .updateDate(selectedDate);
+        });
+      }
+    }
+    return picked;
+  }
 
   // This function displays a CupertinoModalPopup with a reasonable fixed height
   // which hosts CupertinoDatePicker.
@@ -737,97 +1178,25 @@ class _DatePickerExampleState extends State<DatePickerExample> {
             children: <Widget>[
               _DatePickerItem(
                 children: <Widget>[
-                  Text(
-                    S.of(context).restaurantFoundationDateString,
-                    style: const TextStyle(
-                      fontSize: 12,
+                  Expanded(
+                    child: Text(
+                      S.of(context).restaurantFoundationDateString,
+                      style: const TextStyle(
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                   CupertinoButton(
                     // Display a CupertinoDatePicker in date picker mode.
-                    onPressed: () => _showDialog(
-                      CupertinoDatePicker(
-                        initialDateTime: date,
-                        mode: CupertinoDatePickerMode.date,
-                        use24hFormat: true,
-                        // This is called when the user changes the date.
-                        onDateTimeChanged: (DateTime newDate) {
-                          setState(() {
-                            date = newDate;
-                            Provider.of<MyProvider>(
-                              context,
-                              listen: false,
-                            ).updateDate(newDate);
-                          });
-                        },
-                      ),
-                    ),
-                    // In this example, the date is formatted manually. You can
-                    // use the intl package to format the value based on the
-                    // user's locale settings.
+                    onPressed: () => _selectDate(),
                     child: Text(
-                      '${date.month}-${date.day}-${date.year}',
+                      '${date?.month ?? '01'}-${date?.day ?? '01'}-${date?.year ?? '2000'}',
                       style: TextStyle(
-                          fontSize: 22.0, color: Colors.grey.shade600),
+                          fontSize: 21.0, color: Colors.grey.shade600),
                     ),
                   ),
                 ],
               ),
-              // _DatePickerItem(
-              //   children: <Widget>[
-              //     const Text('Time'),
-              //     CupertinoButton(
-              //       // Display a CupertinoDatePicker in time picker mode.
-              //       onPressed: () => _showDialog(
-              //         CupertinoDatePicker(
-              //           initialDateTime: time,
-              //           mode: CupertinoDatePickerMode.time,
-              //           use24hFormat: true,
-              //           // This is called when the user changes the time.
-              //           onDateTimeChanged: (DateTime newTime) {
-              //             setState(() => time = newTime);
-              //           },
-              //         ),
-              //       ),
-              //       // In this example, the time value is formatted manually.
-              //       // You can use the intl package to format the value based on
-              //       // the user's locale settings.
-              //       child: Text(
-              //         '${time.hour}:${time.minute}',
-              //         style: const TextStyle(
-              //           fontSize: 22.0,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // _DatePickerItem(
-              //   children: <Widget>[
-              //     const Text('DateTime'),
-              //     CupertinoButton(
-              //       // Display a CupertinoDatePicker in dateTime picker mode.
-              //       onPressed: () => _showDialog(
-              //         CupertinoDatePicker(
-              //           initialDateTime: dateTime,
-              //           use24hFormat: true,
-              //           // This is called when the user changes the dateTime.
-              //           onDateTimeChanged: (DateTime newDateTime) {
-              //             setState(() => dateTime = newDateTime);
-              //           },
-              //         ),
-              //       ),
-              //       // In this example, the time value is formatted manually. You
-              //       // can use the intl package to format the value based on the
-              //       // user's locale settings.
-              //       child: Text(
-              //         '${dateTime.month}-${dateTime.day}-${dateTime.year} ${dateTime.hour}:${dateTime.minute}',
-              //         style: const TextStyle(
-              //           fontSize: 22.0,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ),
@@ -849,18 +1218,7 @@ class _DatePickerItem extends StatelessWidget {
           border: Border.all(
             color: Colors.grey,
             width: 1.5,
-          )
-          // Border(
-          //   top: BorderSide(
-          //     color: CupertinoColors.inactiveGray,
-          //     width: 0.0,
-          //   ),
-          //   bottom: BorderSide(
-          //     color: CupertinoColors.inactiveGray,
-          //     width: 0.0,
-          //   ),
-          // ),
-          ),
+          )),
       child: Padding(
         padding: const EdgeInsets.only(left: 5),
         child: Row(

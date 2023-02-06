@@ -36,6 +36,11 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Voulez-vous vraiment supprimer ce menu?"),
         "assistString": MessageLookupByLibrary.simpleMessage(
             "Comment pouvons-nous vous aider ?"),
+        "averagePriceIsRequired":
+            MessageLookupByLibrary.simpleMessage("Le prix moyen est requis"),
+        "averageTimeIsRequired":
+            MessageLookupByLibrary.simpleMessage("Le temps moyen est requis"),
+        "backString": MessageLookupByLibrary.simpleMessage("retour"),
         "bikeIsOnItsWayString": MessageLookupByLibrary.simpleMessage(
             "Félicitations, vous avez appelé une moto"),
         "callBikeButton":
@@ -43,6 +48,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "callBikeForDeliveryString":
             MessageLookupByLibrary.simpleMessage("appeler une moto"),
         "cancelString": MessageLookupByLibrary.simpleMessage("Annuler"),
+        "changeEmailString":
+            MessageLookupByLibrary.simpleMessage("Modifiez email"),
+        "chooseAveragePrice":
+            MessageLookupByLibrary.simpleMessage("Choisissez le prix moyen"),
+        "chooseAverageTime":
+            MessageLookupByLibrary.simpleMessage("Choisissez temps moyen"),
         "chooseCommunity":
             MessageLookupByLibrary.simpleMessage("choisissez votre quartier"),
         "chooseFoodAverageString": MessageLookupByLibrary.simpleMessage(
@@ -52,8 +63,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Choisissez votre temps moyen de préparation des repas"),
         "choosePhotoString":
             MessageLookupByLibrary.simpleMessage("Choisissez une photo"),
+        "communitySelectionIsRequired": MessageLookupByLibrary.simpleMessage(
+            "La sélection de la communauté est requise"),
+        "confirmPasswordIsRequired": MessageLookupByLibrary.simpleMessage(
+            "Confirmer le mot de passe est requis"),
         "confirmPasswordString":
             MessageLookupByLibrary.simpleMessage("Confirmez le mot de passe"),
+        "continueString": MessageLookupByLibrary.simpleMessage("continuer"),
         "declineOrderString":
             MessageLookupByLibrary.simpleMessage("Refuser la commande"),
         "deleteAccountString":
@@ -68,6 +84,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Destination:"),
         "dontHaveAccountString":
             MessageLookupByLibrary.simpleMessage("Pas de compte ?"),
+        "emailAddressIsRequired": MessageLookupByLibrary.simpleMessage(
+            "L\'adresse email est requise"),
+        "emailNotVerifiedWarningString": MessageLookupByLibrary.simpleMessage(
+            "Votre email n\'a pas encore été vérifié. Vérifiez votre boîte de réception ou cliquez sur réenvoyer pour recevoir une autre vérification ou cliquez sur changer l\'email pour entrer un autre email !"),
+        "emailWasSentString":
+            MessageLookupByLibrary.simpleMessage("Un email vous a été envoyé"),
         "enterDestinationString":
             MessageLookupByLibrary.simpleMessage("Entrez la Destination"),
         "enterIngredient":
@@ -75,6 +97,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "foodDescription":
             MessageLookupByLibrary.simpleMessage("Description des Aliments"),
         "foodName": MessageLookupByLibrary.simpleMessage("Nom de L\'Aliment"),
+        "forgotPasswordString":
+            MessageLookupByLibrary.simpleMessage("Mot de passe oublié ?"),
         "getHelpWithPhoneCallString": MessageLookupByLibrary.simpleMessage(
             "Obtenir de l\'aide avec un appel téléphonique"),
         "getHelpWithaMessage": MessageLookupByLibrary.simpleMessage(
@@ -105,11 +129,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "orderIconLabel": MessageLookupByLibrary.simpleMessage("Commander"),
         "passwordHintString":
             MessageLookupByLibrary.simpleMessage("le mot de passe"),
+        "passwordIsRequired":
+            MessageLookupByLibrary.simpleMessage("Le mot de passe est requis"),
         "pendingOrderString":
             MessageLookupByLibrary.simpleMessage(" Ordres en attente"),
         "pendingOrdersString":
             MessageLookupByLibrary.simpleMessage("COMMANDES EN COURS"),
         "pendingString": MessageLookupByLibrary.simpleMessage("En attente"),
+        "phoneNumberIsRequired": MessageLookupByLibrary.simpleMessage(
+            "Le numéro de téléphone est requis"),
         "pleaseFillIntheDestinationString":
             MessageLookupByLibrary.simpleMessage(
                 "Veuillez remplir les contenants vides"),
@@ -120,12 +148,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "price": MessageLookupByLibrary.simpleMessage("Prix"),
         "rememberMeString":
             MessageLookupByLibrary.simpleMessage("souvenez vous de moi"),
+        "resendString": MessageLookupByLibrary.simpleMessage("renvoyer"),
         "restaurantFoundationDateString": MessageLookupByLibrary.simpleMessage(
             "Date de fondation du restaurant"),
         "restaurantFullAddressHintString": MessageLookupByLibrary.simpleMessage(
             "Adresse complète du restaurant"),
+        "restaurantFullAddressIsRequired": MessageLookupByLibrary.simpleMessage(
+            "Adresse complète du restaurant est requise"),
+        "restaurantFullAddressString": MessageLookupByLibrary.simpleMessage(
+            "Adresse complète du restaurant"),
         "restaurantHintString":
             MessageLookupByLibrary.simpleMessage("Nom de Restaurant"),
+        "restaurantNameIsRequired": MessageLookupByLibrary.simpleMessage(
+            "Le nom du restaurant est requis"),
         "saveButtonString": MessageLookupByLibrary.simpleMessage("Enregistrer"),
         "selectLanguageString":
             MessageLookupByLibrary.simpleMessage("Choix Langue"),

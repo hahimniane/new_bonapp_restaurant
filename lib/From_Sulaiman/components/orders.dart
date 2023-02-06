@@ -1,8 +1,8 @@
+import 'package:bonapp_restaurant/From_Sulaiman/components/pending_orders.dart';
 import 'package:flutter/material.dart';
 
 import '../../generated/l10n.dart';
-import '../components/delivered_orders.dart';
-import '../components/pending_orders.dart';
+import 'delivered_orders.dart';
 
 class Order extends StatefulWidget {
   const Order({Key? key}) : super(key: key);

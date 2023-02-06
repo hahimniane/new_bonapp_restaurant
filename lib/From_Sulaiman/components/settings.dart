@@ -61,6 +61,7 @@ class _SettingState extends State<Setting> {
               },
             if (fieldNameInFirestore == 'Email')
               {
+
                 user
                     ?.updateEmail(update.text)
                     .then((value) async => {
@@ -176,7 +177,7 @@ class _SettingState extends State<Setting> {
     final emailField = StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Restaurants')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .snapshots(),
         builder: (context, snapshot) {
           return TextFormField(
@@ -191,7 +192,7 @@ class _SettingState extends State<Setting> {
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.email),
               contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-              hintText: FirebaseAuth.instance.currentUser!.email,
+              hintText: FirebaseAuth.instance.currentUser?.email,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -203,7 +204,7 @@ class _SettingState extends State<Setting> {
     final restaurantNameField = StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Restaurants')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -275,7 +276,7 @@ class _SettingState extends State<Setting> {
     final restaurantPhoneNumberField = StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Restaurants')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -312,7 +313,7 @@ class _SettingState extends State<Setting> {
     final communityField = StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('Restaurants')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -352,16 +353,22 @@ class _SettingState extends State<Setting> {
       child: RoundedLoadingButton(
         width: MediaQuery.of(context).size.width,
         onPressed: () async {
-          saveUpdateToDatabase(email, 'Email', changeSettingButtonController);
-          saveUpdateToDatabase(
-              restaurantName, 'Restaurant Name', changeSettingButtonController);
-          // saveUpdateToDatabase(
-          //     community, 'Community', changeSettingButtonController);
+          if(email.text.isEmpty&&restaurantName.text.isEmpty&&restaurantPhoneNumber.text.isEmpty&&restaurantFullAddress.text.isEmpty){
+            print('all is emyty');
+            changeSettingButtonController.reset();
+          }else{
+            saveUpdateToDatabase(email, 'Email', changeSettingButtonController);
+            saveUpdateToDatabase(
+                restaurantName, 'Restaurant Name', changeSettingButtonController);
+            // saveUpdateToDatabase(
+            //     community, 'Community', changeSettingButtonController);
 
-          saveUpdateToDatabase(restaurantPhoneNumber, 'Phone Number',
-              changeSettingButtonController);
-          saveUpdateToDatabase(restaurantFullAddress, 'Restaurant Full Address',
-              changeSettingButtonController);
+            saveUpdateToDatabase(restaurantPhoneNumber, 'Phone Number',
+                changeSettingButtonController);
+            saveUpdateToDatabase(restaurantFullAddress, 'Restaurant Full Address',
+                changeSettingButtonController);
+          }
+
 
           // await EasyLoading.show(
           //     status: '',
@@ -415,7 +422,7 @@ class _SettingState extends State<Setting> {
                       child: StreamBuilder<DocumentSnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('MenuPhotos')
-                              .doc(FirebaseAuth.instance.currentUser!.uid)
+                              .doc(FirebaseAuth.instance.currentUser?.uid)
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
@@ -483,7 +490,7 @@ class _SettingState extends State<Setting> {
                     child: StreamBuilder<DocumentSnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection('All restaurant profile Pictures')
-                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .doc(FirebaseAuth.instance.currentUser?.uid)
                             .snapshots(),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
@@ -537,10 +544,10 @@ class _SettingState extends State<Setting> {
           const SizedBox(
             height: 100,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-            child: emailField,
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+          //   child: emailField,
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
             child: restaurantNameField,

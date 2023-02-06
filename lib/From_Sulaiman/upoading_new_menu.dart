@@ -4,12 +4,13 @@ import 'package:bonapp_restaurant/Utils/fluttertoast.dart';
 import 'package:bonapp_restaurant/services/calling_bike.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
+
 import 'package:image_picker/image_picker.dart';
 
 import 'package:path/path.dart' as Path;
@@ -17,8 +18,10 @@ import 'package:http/http.dart' as http;
 
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../Sandbox.dart';
 import '../api_class.dart';
 import '../generated/l10n.dart';
+import '../send_notification.dart';
 import '../services/firbase.dart';
 
 class AddNewMenuPage extends StatefulWidget {
@@ -29,7 +32,7 @@ class AddNewMenuPage extends StatefulWidget {
 }
 
 class _AddNewMenuPageState extends State<AddNewMenuPage> {
-  FirebaseAthentications database = FirebaseAthentications();
+  FirebaseAuthentications database = FirebaseAuthentications();
   TextEditingController firstController = TextEditingController();
   final List<TextEditingController> _controllers = [];
   final List<Row> _fields = [];
@@ -58,36 +61,36 @@ class _AddNewMenuPageState extends State<AddNewMenuPage> {
       'https://api.logmeal.es/v2/image/recognition/type/v1.0?skip_types=%5B1%2C3%5D&language=eng';
 
   String? foodType;
-  getLabel(File image) async {
-    List myImageSuggestions = [];
-    // print('called');
-    final inputImage = InputImage.fromFile(image);
-    final ImageLabelerOptions options =
-        ImageLabelerOptions(confidenceThreshold: 0.5);
-    final imageLabeler = ImageLabeler(options: options);
-    final List<ImageLabel> labels = await imageLabeler.processImage(inputImage);
-    double confindence = 0;
-    String finalLabel = '';
-
-    for (ImageLabel label in labels) {
-      myImageSuggestions.add(ImageLabel);
-      print(label.label);
-      if (label.confidence > confindence) {
-        confindence = label.confidence;
-        finalLabel = label.label;
-      }
-
-      // print(
-      //     'the name is ${label.label} and the confidence ${label.confidence}');
-      // final String text = label.label;
-      // final int index = label.index;
-      // final double confidence = label.confidence;
-      //
-      // print(text);
-    }
-    print('the highest label is ${finalLabel}');
-    return finalLabel;
-  }
+  // getLabel(File image) async {
+  //   List myImageSuggestions = [];
+  //   // print('called');
+  //   final inputImage = InputImage.fromFile(image);
+  //   final ImageLabelerOptions options =
+  //       ImageLabelerOptions(confidenceThreshold: 0.5);
+  //   final imageLabeler = ImageLabeler(options: options);
+  //   final List<ImageLabel> labels = await imageLabeler.processImage(inputImage);
+  //   double confindence = 0;
+  //   String finalLabel = '';
+  //
+  //   for (ImageLabel label in labels) {
+  //     myImageSuggestions.add(ImageLabel);
+  //     print(label.label);
+  //     if (label.confidence > confindence) {
+  //       confindence = label.confidence;
+  //       finalLabel = label.label;
+  //     }
+  //
+  //     // print(
+  //     //     'the name is ${label.label} and the confidence ${label.confidence}');
+  //     // final String text = label.label;
+  //     // final int index = label.index;
+  //     // final double confidence = label.confidence;
+  //     //
+  //     // print(text);
+  //   }
+  //   print('the highest label is ${finalLabel}');
+  //   return finalLabel;
+  // }
 
   // printImageLabels() async {
   //   List labels = await getLabel();
@@ -115,11 +118,11 @@ class _AddNewMenuPageState extends State<AddNewMenuPage> {
         int a = 0;
         if (a == 0) {
           try {
-            if (name.text.isNotEmpty ||
-                desc.text.isNotEmpty ||
-                price.text.isNotEmpty ||
-                imageFile1!.path.isNotEmpty ||
-                _controllers.isNotEmpty) {
+            if (name.text.isNotEmpty &&
+                desc.text.isNotEmpty &&
+                price.text.isNotEmpty &&
+                imageFile1!.path.isNotEmpty
+                ) {
               var downloadableUrl = await uploadFile();
               if (downloadableUrl != null) {
                 bool isDone = await database.getLastMenNumber(
@@ -144,7 +147,12 @@ class _AddNewMenuPageState extends State<AddNewMenuPage> {
               }
             } else {
               if (kDebugMode) {
-                print('something is empty');
+               Fluttertoast.showToast(
+                 textColor: Colors.white,
+                 backgroundColor: Colors.red,
+                   gravity: ToastGravity.CENTER,
+                   msg: S.of(context).pleaseFillIntheDestinationString);
+                addMenuButtonController.reset();
               }
             }
           } catch (e) {
@@ -397,19 +405,12 @@ class _AddNewMenuPageState extends State<AddNewMenuPage> {
                           elevation: 7,
                           child: imageFile1 != null
                               ? Image.file(imageFile1!)
-                              : Image.asset('images/menu.jpeg')),
+                              : Image.asset('images/menu.jpeg'),
+                      ),
                     ),
                   ),
 
-                  // TextButton(
-                  //   onPressed: () async {
-                  //     API myApi = API();
-                  //     myApi.getApi(imageFile1!);
-                  //
-                  //     // getLabel();
-                  //   },
-                  //   child: Text('Click'),
-                  // ),
+
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -519,7 +520,7 @@ class _AddNewMenuPageState extends State<AddNewMenuPage> {
 
       if (pickedFile != null) {
         File imageFile = File(pickedFile.path);
-        foodType = await getLabel(imageFile);
+        // foodType = await getLabel(imageFile);
 
         setState(() {
           imageFile1 = File(pickedFile!.path);

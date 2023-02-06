@@ -11,7 +11,7 @@ class AverageTimePage extends StatefulWidget {
 }
 
 class _AverageTimePageState extends State<AverageTimePage> {
-  FirebaseAthentications service = FirebaseAthentications();
+  FirebaseAuthentications service = FirebaseAuthentications();
 
   Time price = Time.twentyMinute;
   var chosenTime;

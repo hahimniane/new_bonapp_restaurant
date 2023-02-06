@@ -10,6 +10,7 @@
   "restaurantFullAddressHintString": "Restaurant full address",
   "restaurantFoundationDateString": "Restaurant Foundation Date",
   "passwordHintString": "password",
+  "forgotPasswordString": "Forgot Password?",
   "confirmPasswordString": "confirm password",
   "alreadyHaveAnAccountString": "Already have an account?",
   "homeIconLabel": "Home",
@@ -70,6 +71,25 @@
 
 
   "bikeIsOnItsWayString": "Congrats you have successfully called a motorbike!",
-  "aBikeIsAlreadyOnTheWayString": "A bike is Already on the way!"
+  "aBikeIsAlreadyOnTheWayString": "A bike is Already on the way!",
+  "chooseAveragePriceString": "Choisir le prix moyen",
+  "chooseAveragePrice": "Choose Average Price",
+  "chooseAverageTime": "Choose Average Time",
+  "restaurantFullAddressString": "Restaurant full address",
 
+  "emailAddressIsRequired": "Email address is required",
+  "restaurantNameIsRequired": "restaurant name is required",
+  "communitySelectionIsRequired": "Community selection is required",
+"restaurantFullAddressIsRequired": "Restaurant full address is required",
+  "phoneNumberIsRequired": "Phone number is required",
+  "passwordIsRequired": "Password is required",
+  "confirmPasswordIsRequired": "Confirm Password is required",
+  "averagePriceIsRequired": "Average Price is required",
+  "averageTimeIsRequired": "Average Time is required",
+  "continueString": "continue",
+  "resendString": "resend",
+  "backString": "back",
+  "emailNotVerifiedWarningString": "Your email has not been verified yet. check your inbox or click resend to receive another verification or click change email to enter another email",
+  "changeEmailString": "Change email",
+  "emailWasSentString": "An  email has been sent to you"
 }

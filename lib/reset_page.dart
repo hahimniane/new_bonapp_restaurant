@@ -1,13 +1,13 @@
 import 'package:bonapp_restaurant/services/firbase.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 
 import 'components/methods.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   ResetPasswordPage({Key? key}) : super(key: key);
   TextEditingController userNameOrEmail = TextEditingController();
-  FirebaseAthentications firebaseAthentications = FirebaseAthentications();
+  FirebaseAuthentications firebaseAthentications = FirebaseAuthentications();
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -18,12 +18,11 @@ class ResetPasswordPage extends StatelessWidget {
         title: Text(
           //ToDO: add translation for this page. and a remainder the email has not been received so far. so there is a bug somether. handle it after
           'Login',
-          style: GoogleFonts.alata(
-            textStyle: const TextStyle(
+          style:  TextStyle(
                 color: Colors.white,
                 letterSpacing: .20,
                 fontWeight: FontWeight.w900),
-          ),
+
         ),
       ),
       body: Center(

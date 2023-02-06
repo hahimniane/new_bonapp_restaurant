@@ -11,6 +11,7 @@
   "restaurantFullAddressHintString": "Adresse complète du restaurant",
   "restaurantFoundationDateString": "Date de fondation du restaurant",
   "passwordHintString": "le mot de passe",
+  "forgotPasswordString": "Mot de passe oublié ?",
   "confirmPasswordString": "Confirmez le mot de passe",
   "alreadyHaveAnAccountString": "Vous avez déjà un compte?",
   "homeIconLabel": "Accueil",
@@ -72,5 +73,23 @@
 
 
   "bikeIsOnItsWayString": "Félicitations, vous avez appelé une moto",
-  "aBikeIsAlreadyOnTheWayString": "Un Motard est deja en route"
+  "aBikeIsAlreadyOnTheWayString": "Un Motard est deja en route",
+  "chooseAveragePrice": "Choisissez le prix moyen",
+  "chooseAverageTime": "Choisissez temps moyen",
+  "restaurantFullAddressString": "Adresse complète du restaurant",
+  "emailAddressIsRequired": "L'adresse email est requise",
+  "restaurantNameIsRequired": "Le nom du restaurant est requis",
+  "communitySelectionIsRequired": "La sélection de la communauté est requise",
+  "restaurantFullAddressIsRequired": "Adresse complète du restaurant est requise",
+  "phoneNumberIsRequired": "Le numéro de téléphone est requis",
+  "passwordIsRequired": "Le mot de passe est requis",
+  "confirmPasswordIsRequired": "Confirmer le mot de passe est requis",
+  "averagePriceIsRequired": "Le prix moyen est requis",
+  "averageTimeIsRequired": "Le temps moyen est requis",
+  "continueString": "continuer",
+  "resendString": "renvoyer",
+  "backString": "retour",
+  "emailNotVerifiedWarningString":"Votre email n'a pas encore été vérifié. Vérifiez votre boîte de réception ou cliquez sur réenvoyer pour recevoir une autre vérification ou cliquez sur changer l'email pour entrer un autre email !",
+  "changeEmailString": "Modifiez email",
+  "emailWasSentString": "Un email vous a été envoyé"
 }

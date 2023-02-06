@@ -52,7 +52,7 @@ class _MenuState extends State<Menu> {
   bool loader = false;
   // bool controller = true;
 
-  FirebaseAthentications firebaseAthentications = FirebaseAthentications();
+  FirebaseAuthentications firebaseAthentications = FirebaseAuthentications();
 
   late File imageFile1;
 
@@ -137,6 +137,7 @@ class _MenuState extends State<Menu> {
                         DocumentSnapshot data = snapshot.data!.docs[index];
                         final item = snapshot.data!.docs[index];
                         return Slidable(
+                          enabled: true,
                           endActionPane: ActionPane(
                             motion: const StretchMotion(),
                             dismissible: DismissiblePane(
@@ -202,6 +203,7 @@ class _MenuState extends State<Menu> {
                             ],
                           ),
                           key: Key(item.toString()),
+
                           child: SizedBox(
                             height: 150,
                             child: Card(
@@ -317,6 +319,8 @@ class _MenuState extends State<Menu> {
                     size: 20,
                   )),
                   onPressed: () {
+                    // return Builder(builder: Slidable.of(context)?.close();)
+
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -341,12 +345,13 @@ class _MenuState extends State<Menu> {
 
   @override
   void initState() {
+
     super.initState();
     Slidable.of(context)?.openEndActionPane();
   }
 
   Widget _buildPopupDialogForDeletingMenu(BuildContext context, var data) {
-    FirebaseAthentications firebaseAuthentications = FirebaseAthentications();
+    FirebaseAuthentications firebaseAuthentications = FirebaseAuthentications();
     FirebaseAuth auth = FirebaseAuth.instance;
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     return AlertDialog(

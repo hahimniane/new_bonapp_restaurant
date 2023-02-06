@@ -1,10 +1,13 @@
 import 'dart:async';
 
-import 'package:bonapp_restaurant/exceptionaHomeScreen.dart';
+
+import 'package:bonapp_restaurant/From_Sulaiman/components/orders.dart' as orders;
 import 'package:bonapp_restaurant/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore_platform_interface/src/platform_interface/platform_interface_index_definitions.dart' as firestore;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -17,20 +20,22 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Provders/login_control.dart';
+import '../../Provders/provider.dart';
+import '../../Utils/languageFile.dart';
+import '../../exceptionaHomeScreen.dart';
 import '../../generated/l10n.dart';
 import '../../services/firbase.dart';
-import 'package:bonapp_restaurant/kvaribles.dart';
-import '../../Provders/provider.dart';
 import '../components/home.dart';
-
 import '../components/menu.dart';
 import '../components/orders.dart';
 import '../components/settings.dart';
 import '../components/support folder/support_page.dart';
 import 'login_screen.dart';
+import 'package:bonapp_restaurant/kvaribles.dart';
+
 
 const List<String> list = <String>['English', 'French'];
-// final scaffoldKey = GlobalKey<ScaffoldState>();
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -41,23 +46,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   print('it entered here');
-  //   switch (state) {
-  //     case AppLifecycleState.inactive:
-  //       print("Inactive");
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       print("Paused");
-  //       break;
-  //     case AppLifecycleState.resumed:
-  //       print("Resumed");
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       print("detached");
-  //       break;
-  //   }
-  // }
+
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
@@ -71,23 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .set({'Token': token}, SetOptions(merge: true));
   }
 
-  checkWhichLanguageIsActive() async {
-    if (Provider.of<MyProvider>(context, listen: false)
-            .currentLocale
-            .toString() ==
-        'en') {
-      setState(() {
-        if (kDebugMode) {
-          print('locale is english setting the value to english');
-        }
-        selectedValue = 'English';
-      });
-    } else {
-      setState(() {
-        selectedValue = 'French';
-      });
-    }
-  }
+
 
   newVersions() async {
     final newVersion = NewVersion();
@@ -113,13 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    // if (status!.localVersion != status.storeVersion) {
-    //   newVersion.launchAppStore(status.appStoreLink.toString());
-    // }
 
-    // var localVersion = status?.localVersion; // (1.2.1)
-    // var storeVersion = status?.storeVersion; // (1.2.3)
-    // var appStroeLink = status?.appStoreLink;
   }
 
   ControlSignIn controlSignIn = ControlSignIn();
@@ -138,49 +105,26 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   setState(() {
-  //     // _stateHistoryList.add(state);
-  //     if (state == AppLifecycleState.paused) {
-  //       test();
-  //     }
-  //   });
-  // }
 
-  test() {
-    FirebaseAthentications database = FirebaseAthentications();
-    database.logoutUser(context);
-    print('Signed out');
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-  }
 
-  delete() async {
-    FlutterSecureStorage storage = await FlutterSecureStorage();
-    print(storage.read(key: 'email'));
-    print(storage.read(key: 'password'));
-  }
 
-  // final List<AppLifecycleState> _stateHistoryList = <AppLifecycleState>[];
+
+
+
   @override
   void initState() {
-    // WidgetsBinding.instance.addObserver(this);
-    // if (WidgetsBinding.instance.lifecycleState != null) {
-    //   _stateHistoryList.add(WidgetsBinding.instance.lifecycleState!);
-    // }
-
-    // timerFunctionForUpdateReminder();
+getSavedLanguageSettings(context);
     super.initState();
 
     updateToken();
     Future.delayed(Duration.zero, () {
-      checkWhichLanguageIsActive();
+
     });
 
-    checkWhichLanguageIsActive();
+
   }
 
-  static late String selectedValue;
+  // static late String selectedValue;
   int _currentTabIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -202,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     final _kTapPages = <Widget>[
       const Home(),
-      const Order(),
+      const orders.Order(),
       Menu(
           // myKey: scaffoldKey,
           ),
@@ -228,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: () async => false,
       child: Scaffold(
         drawer: MyDrawer(
-          activeLanguage: selectedValue,
+          activeLanguage: '',
         ),
 
         appBar: AppBar(
@@ -275,14 +219,17 @@ class DropdownButtonDelete extends StatefulWidget {
 }
 
 class _DropdownButtonDeleteState extends State<DropdownButtonDelete> {
-  setPrefrence(value) async {
-    String language = value;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('language', language);
-  }
+  // setPrefrence(value) async {
+  //   String language = value;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setString('language', language);
+  // }
 
-  String stateDropdownValue = 'French';
+  late String stateDropdownValue ;
   getPrefrenceLanguage() async {
+
+
+
     final _prefrences = await SharedPreferences.getInstance();
     setState(() {
       if (_prefrences.getString('language') == null) {
@@ -300,62 +247,71 @@ class _DropdownButtonDeleteState extends State<DropdownButtonDelete> {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: stateDropdownValue,
-      icon: const Icon(
-        Icons.arrow_drop_down,
-        size: 30,
-        color: Colors.black,
-      ),
-      elevation: 16,
-      style: TextStyle(color: Colors.grey.shade800),
-      onChanged: (String? value) {
-        setActiveLanguageToDatabase(value);
-        setState(() {
-          setPrefrence(value);
-          if (value == 'English') {
-            context.read<MyProvider>().changeLocale('en');
-            stateDropdownValue = value!;
-          }
-        });
-        FirebaseFirestore.instance
-            .collection('Restaurants')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .set({'active Locale': value}, SetOptions(merge: true)).then(
-                (value) => {print('successful')});
-
-        setState(() {
-          if (value == 'French') {
-            context.read<MyProvider>().changeLocale('fr');
-          }
-          stateDropdownValue = value!;
-        });
-      },
-      items: list.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(
-            value,
-            // style: const TextStyle(
-            //   color: Colors.white60,
-            // ),
+    // stateDropdownValue=Provider.of<MyProvider>(context,listen: false).currentLocale=='fr'?'French':"English";
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if(!snapshot.hasData){
+          return CircularProgressIndicator();
+        }
+        return DropdownButton<String>(
+          hint: Text(snapshot.data!.getString('language')??'Francais'),
+          value: stateDropdownValue,
+          icon: const Icon(
+            Icons.arrow_drop_down,
+            size: 30,
+            color: Colors.black,
           ),
+          elevation: 16,
+          style: TextStyle(color: Colors.grey.shade800),
+          onChanged: (String? value) {
+            // setActiveLanguageToDatabase(value);
+            // setPrefrence(value);
+            setLanguage(value!);
+            setState(() {
+
+              if (value == 'English') {
+                stateDropdownValue = value;
+                context.read<MyProvider>().changeLocale('en');
+
+              }
+            });
+
+            if (value == 'French') {
+              context.read<MyProvider>().changeLocale('fr');
+            }
+            setState(() {
+
+              stateDropdownValue = value;
+            });
+          },
+          items: list.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(
+                value,
+                // style: const TextStyle(
+                //   color: Colors.white60,
+                // ),
+              ),
+            );
+          }).toList(),
         );
-      }).toList(),
+      }
     );
   }
 
   FirebaseFirestore firebase = FirebaseFirestore.instance;
-  setActiveLanguageToDatabase(language) async {
-    await firebase
-        .collection('Restaurants')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .set({'active Locale': language}, SetOptions(merge: true));
-  }
+  // setActiveLanguageToDatabase(language) async {
+  //   await firebase
+  //       .collection('Restaurants')
+  //       .doc(FirebaseAuth.instance.currentUser?.uid)
+  //       .set({'active Locale': language}, SetOptions(merge: true));
+  // }
 }
 
 class MyDrawer extends StatefulWidget {
-  String activeLanguage;
+  final String activeLanguage;
   MyDrawer({Key? key, required this.activeLanguage}) : super(key: key);
 
   @override
@@ -400,23 +356,8 @@ class _MyDrawerState extends State<MyDrawer> {
                           return Text(snapshot.data?['Restaurant Name']);
                         }
                       }),
-                  accountEmail: StreamBuilder<DocumentSnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection('Restaurants')
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<dynamic> snapshot) {
-                      if (snapshot.hasError) {
-                        return const Text(
-                            'Error with the databaase. try again later');
-                      } else if (!snapshot.hasData) {
-                        return const CircularProgressIndicator();
-                      } else {
-                        return Text(snapshot.data['Email']);
-                      }
-                    },
-                  ),
+                  accountEmail:  Text(FirebaseAuth.instance.currentUser!.email!),
+
                   currentAccountPicture: StreamBuilder<DocumentSnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('Restaurants')
@@ -568,8 +509,8 @@ class _MyDrawerState extends State<MyDrawer> {
 }
 
 class EditProfilePage extends StatelessWidget {
-  final FirebaseAthentications firebaseAuthentications =
-      FirebaseAthentications();
+  final FirebaseAuthentications firebaseAuthentications =
+      FirebaseAuthentications();
 
   EditProfilePage({Key? key}) : super(key: key);
 
@@ -622,7 +563,7 @@ class EditProfilePage extends StatelessWidget {
 }
 
 Widget _buildPopupDialog(BuildContext context) {
-  FirebaseAthentications firebaseAuthentications = FirebaseAthentications();
+  FirebaseAuthentications firebaseAuthentications = FirebaseAuthentications();
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   return AlertDialog(
@@ -674,68 +615,38 @@ Widget _buildPopupDialog(BuildContext context) {
               style: TextButton.styleFrom(
                   backgroundColor: Colors.deepOrangeAccent),
               onPressed: () async {
-                await EasyLoading.show(
-                  indicator: const CircularProgressIndicator(),
-                );
-                try {
-                  var currentUser = FirebaseAuth.instance.currentUser;
-                  if (currentUser != null) {
-                    firestore
-                        .collection('Restaurants')
-                        .doc(auth.currentUser?.uid)
-                        .delete();
-                    firestore
-                        .collection('All restaurant profile Pictures')
-                        .doc(auth.currentUser?.uid)
-                        .delete();
-                    firestore
-                        .collection(' MenuPhotos')
-                        .doc(auth.currentUser?.uid)
-                        .delete()
-                        .then((value) =>
-                            {firebaseAuthentications.logoutUser(context)})
-                        .then((value) => {
-                              currentUser.delete(),
-                              Fluttertoast.showToast(
-                                  msg: 'your account was deleted successfully',
-                                  gravity: ToastGravity.TOP),
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
-                                ),
-                              ),
-                            });
-                  } else {
-                    Fluttertoast.showToast(
-                        msg: 'Please Sign again to complete the action');
-                  }
-                } on FirebaseException catch (e) {
-                  Fluttertoast.showToast(msg: e.message.toString());
-                  await EasyLoading.dismiss();
-                }
-                await EasyLoading.dismiss();
-                // try {
-                //
-                //   var currentUser = await FirebaseAuth.instance.currentUser;
-                //   if (currentUser != null) {
-                //     currentUser
-                //         .delete()
-                //         .then((value) =>
-                //             {firebaseAuthentications.logoutUser(context)})
-                //         .then((value) => {
-                //               Fluttertoast.showToast(
-                //                   msg:
-                //                       'your account was deleted successfully',
-                //                   gravity: ToastGravity.TOP)
-                //             });
+                FirebaseAuthentications firebaseService=FirebaseAuthentications();
+                   firebaseService.deleteRestaurantFilesFromStorage(context);
+
+
+
+
+                //     .then((value) {
+                //   if (value!.isNotEmpty) {
+                //     print("Subfolder exists");
                 //   } else {
-                //     Fluttertoast.showToast(
-                //         msg: 'Please Sign again to complete the action');
+                //     print("Subfolder does not exist");
                 //   }
-                // } on FirebaseException catch (e) {
-                //   Fluttertoast.showToast(msg: e.message.toString());
-                // }
+                // }).catchError((error) {
+                //   print("Subfolder does nottt exist");
+                // });
+
+
+                // //check if the restaurant has menus uploaded;
+                // Future<Uint8List?> menu=   storage.ref().child('/menus/${auth.currentUser!.uid}').getData();
+                // print(menu);
+                //
+
+
+                // deleteRestaurantFilesFromStorage();
+
+
+
+
+
+
+
+
               },
               child: Text(S.of(context).yestImSureString,
                   style: const TextStyle(
@@ -817,7 +728,7 @@ Widget _buildPopupDialogLogout(BuildContext context) {
               FirebaseAuth.instance.signOut().then((value) async => {
                     signOutController.success(),
                     await Future.delayed(const Duration(seconds: 1)),
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => LoginScreen())),
                   });
             },

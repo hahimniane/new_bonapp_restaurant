@@ -15,7 +15,7 @@ class SaveProfilePhoto extends StatefulWidget {
 }
 
 class _SaveProfilePhotoState extends State<SaveProfilePhoto> {
-  FirebaseAthentications firebaseClass = FirebaseAthentications();
+  FirebaseAuthentications firebaseClass = FirebaseAuthentications();
   late UploadTask? task;
 
   bool loader = false;

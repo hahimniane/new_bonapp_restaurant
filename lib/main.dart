@@ -22,9 +22,7 @@ import 'From_Sulaiman/screens/home_screen.dart';
 import 'From_Sulaiman/screens/login_screen.dart';
 import 'Provders/login_control.dart';
 
-import 'average_time_page.dart';
-import 'averege_price_page.dart';
-import 'bot.dart';
+import 'Provders/validate_form.dart';
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
 
@@ -32,8 +30,11 @@ import 'ibo.dart';
 import 'notification_badge.dart';
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('${message.data['data']['payload']}');
+  print(message.data['name']);
 }
+// _firebaseMessaging.onBackgroundMessage.listen((message) {
+// print('Message payload: ${message.data}');
+// });
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,22 +52,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final Future<FirebaseApp> _initFirebaseSdk = Firebase.initializeApp();
+  final _navigatorKey = new GlobalKey<NavigatorState>();
   bool _isSignedIn = false;
 
   final List<AppLifecycleState> _stateHistoryList = <AppLifecycleState>[];
 
   bool get isSignedIn => _isSignedIn;
-
-  controlSignIn() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      print('something changed');
-      if (user == null) {
-        _isSignedIn = false;
-      } else {
-        _isSignedIn = true;
-      }
-    });
-  }
 
   String uid = '6AIIwwA2SJcH3X1CTr19Byea4fh1';
   getUidPrefrence() async {
@@ -78,7 +70,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  FCMNotificationService service = FCMNotificationService();
+  // FCMNotificationService service = FCMNotificationService();
   final String hashimPhoneToken =
       'dYit65-yQ0GUl3ZjVCSO-E:APA91bFUugE4mEiK9RHfp-ymdIeLhaEbhf89LLJWak0b2fr8JShPkySBeYeiWnqPEuFP8__THJmZ2bkUYwE7pF81issq9ZrCZiMKMm_c1DvsZQB9FdrSh3vH-ImgGZhZaFGQBpUaI17X';
   late int _totalNotification;
@@ -91,10 +83,21 @@ class _MyAppState extends State<MyApp> {
     _messaging = FirebaseMessaging.instance;
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    // FirebaseMessaging.onBackgroundMessage((message) {
+    //   return message;
+    //
+    //
+    // });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Just received a notification when app is opened');
-      print('${message.data['data']['payload']}');
-      print('${message.data}');
+      print('A new onMessageOpenedApp event was published!');
+      // print('the message is ${message.data}');
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => message.data['name']()));
+      // Navigator.pushNamed(
+      //   context,
+      //   '/message',
+      //   arguments: MessageArguments(message, true),
+      // );
     });
     // on Ios, this helps to take the user permissions out of the user
     NotificationSettings settings = await _messaging.requestPermission(
@@ -112,8 +115,8 @@ class _MyAppState extends State<MyApp> {
           badge: true,
           sound: true,
         );
-        print(message.data);
-        //parse the message received
+        // print(message.data);
+
         PushNotification notification = PushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
@@ -144,6 +147,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (context) => CalculatePriceProvider(),
         ),
+        // ChangeNotifierProvider(
+        //   create: (context) => FormValidationProvider(),
+        // ),
         ChangeNotifierProvider(
           create: (context) => MyProvider(),
         ),
@@ -160,9 +166,10 @@ class _MyAppState extends State<MyApp> {
       child: Builder(builder: (context) {
         return OverlaySupport.global(
           child: MaterialApp(
+            navigatorKey: _navigatorKey,
             builder: EasyLoading.init(),
             locale:
-                // Locale('fr'),
+
                 Provider.of<MyProvider>(context, listen: true).currentLocale,
             localizationsDelegates: const [
               S.delegate,
@@ -178,7 +185,9 @@ class _MyAppState extends State<MyApp> {
               primaryColor: Colors.deepOrange[800],
             ),
             home: FirebaseAuth.instance.currentUser != null
+                ? (FirebaseAuth.instance.currentUser!.emailVerified
                 ? HomeScreen()
+                : LoginScreen())
                 : LoginScreen(),
           ),
         );
@@ -194,11 +203,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    getUidPrefrence();
     super.initState();
+
+
+    // getUidPrefrence();
+
     requestAndResgisterNotifications();
     _totalNotification = 0;
-    controlSignIn();
+
     // Provider.of<ControlSignIn>(context, listen: false).controlSignIn();
   }
 }
+

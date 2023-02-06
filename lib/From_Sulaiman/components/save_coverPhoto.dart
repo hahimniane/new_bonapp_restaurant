@@ -16,7 +16,7 @@ class SaveCoverPhotoPage extends StatefulWidget {
 }
 
 class _SaveCoverPhotoPageState extends State<SaveCoverPhotoPage> {
-  FirebaseAthentications firebaseClass = FirebaseAthentications();
+  FirebaseAuthentications firebaseClass = FirebaseAuthentications();
   late UploadTask? task;
 
   bool loader = false;

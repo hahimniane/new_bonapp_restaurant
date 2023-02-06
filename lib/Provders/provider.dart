@@ -3,10 +3,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class MyProvider extends ChangeNotifier {
+  bool userEmailIsVerified=false;
+
+  handleUserEmailIsVerified(isVerified){
+    userEmailIsVerified=isVerified;
+    print('the user email verification is currently set to $userEmailIsVerified');
+  }
+
   Locale _currentLocale = const Locale("fr");
   Locale get currentLocale => _currentLocale;
 
-  late DateTime date;
+   DateTime? date;
   String sharedAuth = '';
   upadateSharedAuth(uid) {
     sharedAuth = uid;
@@ -49,15 +56,5 @@ class MyProvider extends ChangeNotifier {
     _context = context;
     notifyListeners();
   }
-  //
-  // static void setContext(BuildContext context) => FCMProvider._context = context;
-  //
-  // /// when app is in the foreground
-  // static Future<void> onTapNotification(String? payload) async {
-  //   if (FCMProvider._context == null || payload == null) return;
-  //   final Json _data = FCMProvider.convertPayload(payload);
-  //   if (_data.containsKey(...)){
-  //     await Navigator.of(FCMProvider._context!).push(...);
-  //   }
-  // }
+
 }

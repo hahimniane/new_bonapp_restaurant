@@ -17,7 +17,7 @@ class _AveragePricePageState extends State<AveragePricePage> {
   addRestaurantLocationToFirebase(String latitude, String longitude) {
     FirebaseFirestore.instance
         .collection('Restaurants')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .doc(FirebaseAuth.instance.currentUser?.uid)
         .set({
       'latitude': latitude,
       'longitude': longitude,
@@ -46,7 +46,7 @@ class _AveragePricePageState extends State<AveragePricePage> {
     }
   }
 
-  FirebaseAthentications service = FirebaseAthentications();
+  FirebaseAuthentications service = FirebaseAuthentications();
 
   Prices price = Prices.twentyMinute;
   var choosenPrice;
@@ -58,20 +58,20 @@ class _AveragePricePageState extends State<AveragePricePage> {
         child: SafeArea(
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Expanded(
-                  flex: 3,
-                  child: Center(
-                      child: Image(
-                    // color: Colors.white,
-                    image: AssetImage('images/appLogo.png'),
-                  )),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                // const Expanded(
+                //   flex: 3,
+                //   child: Center(
+                //       child: Image(
+                //     // color: Colors.white,
+                //     image: AssetImage('images/appLogo.png'),
+                //   )),
+                // ),
+                // const SizedBox(
+                //   height: 20,
+                // ),
                 Text(
                   S.of(context).chooseFoodAverageString,
                   style: TextStyle(
@@ -82,170 +82,155 @@ class _AveragePricePageState extends State<AveragePricePage> {
                     // color: Color(0xff030199),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Card(
-                    elevation: 15,
-                    shape: const StadiumBorder(
-                      side: BorderSide(
-                        color: Colors.black,
-                        width: 1,
+                Card(
+                  elevation: 15,
+                  shape: const StadiumBorder(
+                    side: BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                  ),
+                  child: ListTile(
+                    title: const Text(
+                      '10.000,000 GNF',
+                      style: TextStyle(
+                        color: Colors.deepOrangeAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: ListTile(
-                      title: const Text(
-                        '10.000,000 GNF',
-                        style: TextStyle(
-                          color: Colors.deepOrangeAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      leading: Radio(
-                        activeColor: Colors.deepOrangeAccent,
-                        value: Prices.twentyMinute,
-                        groupValue: price,
-                        onChanged: (Prices? value) {
-                          setState(() {
-                            price = value!;
-                            choosenPrice = '10000';
-                          });
-                        },
-                      ),
+                    leading: Radio(
+                      activeColor: Colors.deepOrangeAccent,
+                      value: Prices.twentyMinute,
+                      groupValue: price,
+                      onChanged: (Prices? value) {
+                        setState(() {
+                          price = value!;
+                          choosenPrice = '10000';
+                        });
+                      },
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Card(
-                    elevation: 15,
-                    shape: const StadiumBorder(
-                      side: BorderSide(
-                        color: Colors.black,
-                        width: 1.5,
+                Card(
+                  elevation: 15,
+                  shape: const StadiumBorder(
+                    side: BorderSide(
+                      color: Colors.black,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: ListTile(
+                    title: const Text(
+                      '25.000,000 GNF',
+                      style: TextStyle(
+                        color: Colors.deepOrangeAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: ListTile(
-                      title: const Text(
-                        '25.000,000 GNF',
-                        style: TextStyle(
-                          color: Colors.deepOrangeAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      leading: Radio(
-                        activeColor: Colors.deepOrangeAccent,
-                        value: Prices.thirtyMinutes,
-                        groupValue: price,
-                        onChanged: (Prices? value) {
-                          setState(() {
-                            price = value!;
-                            choosenPrice = '25000';
-                          });
-                        },
-                      ),
+                    leading: Radio(
+                      activeColor: Colors.deepOrangeAccent,
+                      value: Prices.thirtyMinutes,
+                      groupValue: price,
+                      onChanged: (Prices? value) {
+                        setState(() {
+                          price = value!;
+                          choosenPrice = '25000';
+                        });
+                      },
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Card(
-                    elevation: 15,
-                    shape: const StadiumBorder(
-                      side: BorderSide(
-                        color: Colors.black,
-                        width: 1.5,
+                Card(
+                  elevation: 15,
+                  shape: const StadiumBorder(
+                    side: BorderSide(
+                      color: Colors.black,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: ListTile(
+                    title: const Text(
+                      '50.000,000 GNF',
+                      style: TextStyle(
+                        color: Colors.deepOrangeAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: ListTile(
-                      title: const Text(
-                        '50.000,000 GNF',
-                        style: TextStyle(
-                          color: Colors.deepOrangeAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      leading: Radio(
-                        activeColor: Colors.deepOrangeAccent,
-                        value: Prices.fourtyFiveMinutes,
-                        groupValue: price,
-                        onChanged: (Prices? value) {
-                          setState(() {
-                            price = value!;
-                            choosenPrice = '50000';
-                          });
-                        },
-                      ),
+                    leading: Radio(
+                      activeColor: Colors.deepOrangeAccent,
+                      value: Prices.fourtyFiveMinutes,
+                      groupValue: price,
+                      onChanged: (Prices? value) {
+                        setState(() {
+                          price = value!;
+                          choosenPrice = '50000';
+                        });
+                      },
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Card(
-                    elevation: 15,
-                    // margin: EdgeInsets.symmetric(vertical: 15),
-                    shape: const StadiumBorder(
-                      side: BorderSide(
-                        color: Colors.black,
-                        width: 1.5,
+                Card(
+                  elevation: 15,
+                  // margin: EdgeInsets.symmetric(vertical: 15),
+                  shape: const StadiumBorder(
+                    side: BorderSide(
+                      color: Colors.black,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: ListTile(
+                    title: const Text(
+                      '75.000,000 GNF',
+                      style: TextStyle(
+                        color: Colors.deepOrangeAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: ListTile(
-                      title: const Text(
-                        '75.000,000 GNF',
-                        style: TextStyle(
-                          color: Colors.deepOrangeAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      leading: Radio(
-                        activeColor: Colors.deepOrangeAccent,
-                        value: Prices.oneHour,
-                        groupValue: price,
-                        onChanged: (Prices? value) {
-                          setState(() {
-                            price = value!;
-                            choosenPrice = '75000';
-                          });
-                        },
-                      ),
+                    leading: Radio(
+                      activeColor: Colors.deepOrangeAccent,
+                      value: Prices.oneHour,
+                      groupValue: price,
+                      onChanged: (Prices? value) {
+                        setState(() {
+                          price = value!;
+                          choosenPrice = '75000';
+                        });
+                      },
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Card(
-                    elevation: 15,
-                    // margin: EdgeInsets.symmetric(vertical: 15),
-                    shape: const StadiumBorder(
-                      side: BorderSide(
-                        color: Colors.black,
-                        width: 1.5,
+                Card(
+                  elevation: 15,
+                  // margin: EdgeInsets.symmetric(vertical: 15),
+                  shape: const StadiumBorder(
+                    side: BorderSide(
+                      color: Colors.black,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: ListTile(
+                    title: const Text(
+                      '100.000,000 GNF',
+                      style: TextStyle(
+                        color: Colors.deepOrangeAccent,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    child: ListTile(
-                      title: const Text(
-                        '100.000,000 GNF',
-                        style: TextStyle(
-                          color: Colors.deepOrangeAccent,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      leading: Radio(
-                        activeColor: Colors.deepOrangeAccent,
-                        value: Prices.oneHourThirtyMinutes,
-                        groupValue: price,
-                        onChanged: (Prices? value) {
-                          setState(() {
-                            price = value!;
-                            choosenPrice = '100000';
-                          });
-                        },
-                      ),
+                    leading: Radio(
+                      activeColor: Colors.deepOrangeAccent,
+                      value: Prices.oneHourThirtyMinutes,
+                      groupValue: price,
+                      onChanged: (Prices? value) {
+                        setState(() {
+                          price = value!;
+                          choosenPrice = '100000';
+                        });
+                      },
                     ),
                   ),
                 ),

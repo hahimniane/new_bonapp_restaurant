@@ -93,7 +93,7 @@ class _ExceptionalHomeScreenState extends State<ExceptionalHomeScreen> {
 
   final List<TextEditingController> _controllers = [];
   final List<Row> _fields = [];
-  FirebaseAthentications firbaseFunctions = FirebaseAthentications();
+  FirebaseAuthentications firbaseFunctions = FirebaseAuthentications();
 
   var dropdownValue = dropdownMenuItems.first;
   @override

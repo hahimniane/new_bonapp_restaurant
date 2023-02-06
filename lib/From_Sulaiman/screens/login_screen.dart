@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bonapp_restaurant/From_Sulaiman/screens/registration_stepper.dart';
 import 'package:bonapp_restaurant/Provders/internet_provider.dart';
 import 'package:bonapp_restaurant/Provders/provider.dart';
 import 'package:bonapp_restaurant/Provders/signInProvider.dart';
@@ -7,6 +8,7 @@ import 'package:bonapp_restaurant/Utils/fluttertoast.dart';
 import 'package:bonapp_restaurant/Utils/sanckbar.dart';
 import 'package:bonapp_restaurant/reset_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -20,9 +22,11 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Provders/login_control.dart';
+import '../../Utils/languageFile.dart';
 import '../../Utils/next_page.dart';
 import '../../averege_price_page.dart';
 import '../../generated/l10n.dart';
+import '../../main.dart';
 import '../../services/firbase.dart';
 
 import '../../services/local_auth.dart';
@@ -37,6 +41,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   SecureStorage secureStorage = SecureStorage();
+
   // final GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
 
   final RoundedLoadingButtonController googleController =
@@ -44,65 +49,46 @@ class _LoginScreenState extends State<LoginScreen> {
   final RoundedLoadingButtonController facebookController =
       RoundedLoadingButtonController();
 
-  var phoneAuthController = RoundedLoadingButtonController();
+  RoundedLoadingButtonController phoneAuthController =
+      RoundedLoadingButtonController();
 
-  var otpCodeController = TextEditingController();
+  TextEditingController otpCodeController = TextEditingController();
 
-  var loginController = RoundedLoadingButtonController();
+  RoundedLoadingButtonController loginController =
+      RoundedLoadingButtonController();
 
-  bool canSendAnotherUpdateMesaage = false;
+  bool canSendAnotherUpdateMessage = false;
   ControlSignIn controlSignIn = ControlSignIn();
 
-  setSharedPrefrences() async {
-    String language = 'French';
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setString('language', language);
-    if (kDebugMode) {
-      print(_prefs.getString('language'));
-    }
-  }
+  // setSharedPrefrences() async {
+  //   String language = 'French';
+  //   SharedPreferences _prefs = await SharedPreferences.getInstance();
+  //   _prefs.setString('language', language);
+  //   if (kDebugMode) {
+  //     print(_prefs.getString('language'));
+  //   }
+  // }
 
   String sharedAuth = '';
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firebase = FirebaseFirestore.instance;
 
-  setActiveLanguageToDatabase(language) async {
-    await firebase
-        .collection('Restaurants')
-        .doc(Provider.of<MyProvider>(context, listen: false).sharedAuth)
-        .set({'active Locale': language}, SetOptions(merge: true));
-  }
-
-  // getLocalFromServer() async {
-  //   return await firebase
+  // setActiveLanguageToDatabase(language) async {
+  //   await firebase
   //       .collection('Restaurants')
-  //       .doc('6AIIwwA2SJcH3X1CTr19Byea4fh1'
-  //           //     Provider.of<MyProvider>(context, listen: false
-  //           // )
-  //           //         .sharedAuth
-  //           //         .toString()
-  //           )
-  //       .get()
-  //       .then((value) => {
-  //             setState(() {
-  //               dropdownValue = value['active Locale'];
-  //             })
-  //           });
+  //       .doc(Provider.of<MyProvider>(context, listen: false).sharedAuth)
+  //       .set({'active Locale': language}, SetOptions(merge: true));
   // }
 
   List<String> list = <String>['English', 'French'];
-  // setSharedLocalPrefrences() async {
-  //  final _prefrences=SharedPreferences.getInstance();
-  //  await _prefrences.
+
+  // late String dropdownValue ;
+  // getPrefrenceLanguage() async {
+  //   final _prefrences = await SharedPreferences.getInstance();
+  //   setState(() {
   //
+  //   });
   // }
-  late String dropdownValue = 'French';
-  getPrefrenceLanguage() async {
-    final _prefrences = await SharedPreferences.getInstance();
-    setState(() {
-      dropdownValue = _prefrences.getString('language')!;
-    });
-  }
 
   static SnackBar activeSnackBar = SnackBar(
       backgroundColor: Colors.deepOrangeAccent,
@@ -145,6 +131,8 @@ class _LoginScreenState extends State<LoginScreen> {
       //   style: TextStyle(fontWeight: FontWeight.bold),
       // ),
       );
+
+  String? chosenLanguage;
 
   // String currentActiveLocal = 'English';
 
@@ -223,9 +211,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   late List<String> myList = [];
-  late String community;
 
-  FirebaseAthentications firebaseFunction = FirebaseAthentications();
+  FirebaseAuthentications firebaseFunction = FirebaseAuthentications();
 
   // form key
   final _formKey = GlobalKey<FormState>();
@@ -245,6 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // dropdownValue= Provider.of<MyProvider>(context,listen: false).currentLocale=='fr'?'French':"English";
     //=====================email input filed ==============================//
     // email field
     final emailField = TextFormField(
@@ -360,64 +348,59 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 30),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: dropdownValue,
-                            icon: const Icon(
-                              Icons.arrow_drop_down,
-                              size: 25,
-                              color: Colors.deepOrangeAccent,
-                            ),
-                            elevation: 16,
-                            style: TextStyle(color: Colors.grey.shade800),
-                            onChanged: (String? value) {
-                              // setActiveLanguageToDatabase(value);
-                              setPrefrence(value);
-                              setState(() {
-                                dropdownValue = value!;
-                                // setActiveLanguageToDatabase(value);
-                              });
-                              if (value == "English") {
-                                Provider.of<MyProvider>(context, listen: false)
-                                    .changeLocale('en');
-                              } else {
-                                Provider.of<MyProvider>(context, listen: false)
-                                    .changeLocale('fr');
+                        child: FutureBuilder<SharedPreferences>(
+                            future: SharedPreferences.getInstance(),
+                            builder: (context, snapshot) {
+                              print(
+                                  'the future builder is ${snapshot.data?.getString('language')}');
+                              if (!snapshot.hasData) {
+                                return CircularProgressIndicator();
                               }
+                              return DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  hint:Text(snapshot.data!.getString('language')!),
+                                  // Text(
+                                  //     snapshot.data!.getString('language') ??
+                                  //         'Francais'),
+                                  value: chosenLanguage,
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 25,
+                                    color: Colors.deepOrangeAccent,
+                                  ),
+                                  elevation: 16,
+                                  style: TextStyle(color: Colors.grey.shade800),
+                                  onChanged: (String? value) {
+                                    setLanguage(value!);
 
-                              // setState(() {
-                              //   if (value == 'English') {
-                              //     context.read<MyProvider>().changeLocale('en');
-                              //     stateDropdownValue = value!;
-                              //   }
-                              // });
-                              // FirebaseFirestore.instance
-                              //     .collection('Restaurants')
-                              //     .doc(FirebaseAuth.instance.currentUser!.uid)
-                              //     .set({'active Locale': value}, SetOptions(merge: true)).then(
-                              //         (value) => {print('successful')});
-                              //
-                              // setState(() {
-                              //   if (value == 'French') {
-                              //     context.read<MyProvider>().changeLocale('fr');
-                              //   }
-                              //   stateDropdownValue = value!;
-                              // });
-                            },
-                            items: list
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: const TextStyle(
-                                      color: Colors.deepOrangeAccent,
-                                      fontWeight: FontWeight.bold),
+                                    setState(() {
+                                      chosenLanguage = value;
+                                    });
+                                    if (value == "English") {
+                                      Provider.of<MyProvider>(context,
+                                              listen: false)
+                                          .changeLocale('en');
+                                    } else {
+                                      Provider.of<MyProvider>(context,
+                                              listen: false)
+                                          .changeLocale('fr');
+                                    }
+                                  },
+                                  items: list.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: const TextStyle(
+                                            color: Colors.deepOrangeAccent,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
                               );
-                            }).toList(),
-                          ),
-                        )),
+                            })),
                   ],
                 ),
               )
@@ -494,7 +477,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               }),
                         ),
-                        Text(S.of(context).rememberMeString),
+                        Expanded(
+                            child: Text(
+                          S.of(context).rememberMeString,
+                          style: TextStyle(fontSize: 11),
+                        )),
                         Expanded(
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.15),
@@ -502,14 +489,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                // var chosenDate=await _selectDate();
+                                // print('the chose date is $chosenDate');
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             ResetPasswordPage()));
                               },
-                              child: Text('Forgot Password?')),
+                              child: Text(S.of(context).forgotPasswordString)),
                         )
                       ],
                     ),
@@ -545,12 +535,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         GestureDetector(
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegistrationScreen(
-                                            ourList: myList,
-                                            theFirstCommunity: 'Almamya',
-                                          )));
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignUpStepper()
+                                    // RegistrationScreen(
+                                    //   ourList: myList,
+                                    //   theFirstCommunity: 'Almamya',
+                                    // ),
+                                    ),
+                              );
                             },
                             child: Text(
                               S.of(context).signUpButtonString,
@@ -698,6 +691,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Timer? timer;
+
   // this function is a timer that when a user has not gotten the latest version of the app. it remindes them every 10 minutes that they are using the app
   timerFunctionForUpdateReminder() {
     newVersions();
@@ -712,12 +706,12 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  setPrefrence(value) async {
-    String language = value ?? 'French';
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('language', language);
-    print(prefs.get('language'));
-  }
+  // setPrefrence(value) async {
+  //   String language = value ?? 'French';
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setString('language', language);
+  //   print(prefs.get('language'));
+  // }
 
 // this below method is useed to check if the user has the latest app version. if they have the latest they be reminded if not it doesnt get run
   newVersions() async {
@@ -743,8 +737,8 @@ class _LoginScreenState extends State<LoginScreen> {
           dismissAction: () => {
                 setState(() {
                   controlSignIn.controlSendAnotherUpdateMesaage(true);
-                  canSendAnotherUpdateMesaage = true;
-                  print('the active is ${canSendAnotherUpdateMesaage}');
+                  canSendAnotherUpdateMessage = true;
+                  print('the active is ${canSendAnotherUpdateMessage}');
                 }),
                 Navigator.pop(context)
               });
@@ -761,14 +755,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   initState() {
+    getSavedLanguageSettings(context);
+    print(
+        'the language is ${Provider.of<MyProvider>(context, listen: false).currentLocale}');
     // timerFunctionForUpdateReminder();
     // newVersions();
     // getUidPrefrence();
     print('the shared auth Unupdated is $sharedAuth');
     // getUidPrefrence();
     // setPrefrence();
-    getPrefrenceLanguage();
-    setPrefrence(null);
+    // getPrefrenceLanguage();
+    // setPrefrence(null);
     super.initState();
 
     // getLocalFromServer();
@@ -957,14 +954,155 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    super.dispose();
     emailController.dispose();
     passwordController.dispose();
 
-    if (timer!.isActive) {
-      timer?.cancel();
-    }
+    timer?.cancel();
 
     print('the timer has been cancelled');
+  }
+
+  Future<DateTime?> _selectDate() async {
+    DateTime? picked;
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      picked = await showModalBottomSheet(
+        useSafeArea: true,
+        constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.98,
+            maxHeight: MediaQuery.of(context).size.height * 0.90),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              // color: Colors.grey,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            height: 400,
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(bottom: 18),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    // color: Colors.purple,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18)),
+                    height: 300,
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: CupertinoDatePicker(
+                            mode: CupertinoDatePickerMode.date,
+                            initialDateTime: DateTime.now(),
+                            onDateTimeChanged: (DateTime newDateTime) {
+                              setState(() {
+                                picked = newDateTime;
+                              });
+                            },
+                          ),
+                        ),
+                        Divider(
+                          height: 5,
+                          thickness: 1,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+
+                              // borderRadius: BorderRadius.circular(15)
+                              ),
+                          width: MediaQuery.of(context).size.width,
+                          child: TextButton(
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 23,
+                                  color: Colors.blue),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: TextButton.styleFrom(
+                              // backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom:8.0),
+                //   child: Container(
+                //     // width: MediaQuery.of(context).size.width*0.90,
+                //     decoration: BoxDecoration(
+                //     borderRadius: BorderRadius.only(
+                //     // topLeft: Radius.circular(15),
+                //     // topRight: Radius.circular(15),
+                //     // bottomLeft: Radius.circular(10),
+                //     // bottomRight: Radius.circular(10),
+                //     ),
+                //       color: Colors.grey
+                //
+                //     ),
+                //
+                //     height: 20,
+                //   ),
+                // ),
+                // Divider(
+                //   color: Colors.grey,
+                //   height: 30,
+                //   thickness: 10,
+                // ),
+                // SizedBox(
+                //   height: 10,
+                // ),
+
+                Container(
+                  padding: EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0)),
+                  width: MediaQuery.of(context).size.width * 0.93,
+                  height: 60,
+                  child: TextButton(
+                    onPressed: () {
+                      // handle ok button press
+                    },
+                    child: Center(
+                      child: Text("Cancel",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue)),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100),
+      );
+    }
+    return picked;
   }
 }
 

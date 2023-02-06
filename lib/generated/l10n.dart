@@ -150,6 +150,16 @@ class S {
     );
   }
 
+  /// `Forgot Password?`
+  String get forgotPasswordString {
+    return Intl.message(
+      'Forgot Password?',
+      name: 'forgotPasswordString',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `confirm password`
   String get confirmPasswordString {
     return Intl.message(
@@ -715,6 +725,196 @@ class S {
     return Intl.message(
       'A bike is Already on the way!',
       name: 'aBikeIsAlreadyOnTheWayString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choisir le prix moyen`
+  String get chooseAveragePriceString {
+    return Intl.message(
+      'Choisir le prix moyen',
+      name: 'chooseAveragePriceString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Average Price`
+  String get chooseAveragePrice {
+    return Intl.message(
+      'Choose Average Price',
+      name: 'chooseAveragePrice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Average Time`
+  String get chooseAverageTime {
+    return Intl.message(
+      'Choose Average Time',
+      name: 'chooseAverageTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurant full address`
+  String get restaurantFullAddressString {
+    return Intl.message(
+      'Restaurant full address',
+      name: 'restaurantFullAddressString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email address is required`
+  String get emailAddressIsRequired {
+    return Intl.message(
+      'Email address is required',
+      name: 'emailAddressIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `restaurant name is required`
+  String get restaurantNameIsRequired {
+    return Intl.message(
+      'restaurant name is required',
+      name: 'restaurantNameIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Community selection is required`
+  String get communitySelectionIsRequired {
+    return Intl.message(
+      'Community selection is required',
+      name: 'communitySelectionIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restaurant full address is required`
+  String get restaurantFullAddressIsRequired {
+    return Intl.message(
+      'Restaurant full address is required',
+      name: 'restaurantFullAddressIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone number is required`
+  String get phoneNumberIsRequired {
+    return Intl.message(
+      'Phone number is required',
+      name: 'phoneNumberIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password is required`
+  String get passwordIsRequired {
+    return Intl.message(
+      'Password is required',
+      name: 'passwordIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm Password is required`
+  String get confirmPasswordIsRequired {
+    return Intl.message(
+      'Confirm Password is required',
+      name: 'confirmPasswordIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Average Price is required`
+  String get averagePriceIsRequired {
+    return Intl.message(
+      'Average Price is required',
+      name: 'averagePriceIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Average Time is required`
+  String get averageTimeIsRequired {
+    return Intl.message(
+      'Average Time is required',
+      name: 'averageTimeIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `continue`
+  String get continueString {
+    return Intl.message(
+      'continue',
+      name: 'continueString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `resend`
+  String get resendString {
+    return Intl.message(
+      'resend',
+      name: 'resendString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `back`
+  String get backString {
+    return Intl.message(
+      'back',
+      name: 'backString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your email has not been verified yet. check your inbox or click resend to receive another verification or click change email to enter another email`
+  String get emailNotVerifiedWarningString {
+    return Intl.message(
+      'Your email has not been verified yet. check your inbox or click resend to receive another verification or click change email to enter another email',
+      name: 'emailNotVerifiedWarningString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change email`
+  String get changeEmailString {
+    return Intl.message(
+      'Change email',
+      name: 'changeEmailString',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An  email has been sent to you`
+  String get emailWasSentString {
+    return Intl.message(
+      'An  email has been sent to you',
+      name: 'emailWasSentString',
       desc: '',
       args: [],
     );
